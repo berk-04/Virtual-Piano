@@ -1,0 +1,72 @@
+
+#|Abrimos la libreria de graficos|#
+
+(require(lib "graphics.ss""graphics"))
+(open-graphics)
+
+#|Ventana principal|#
+(define inicio(open-viewport "Piano Virtual" 1200 600))  ;Define una función para abrir la ventana de inicio
+(define main(open-viewport "Piano Virtual" 1200 600))    ;Define una funcion para abrir la ventana principal
+
+#|Pantalla inicio|#
+((draw-pixmap inicio)"Cartel de bienvenida.jpeg" (make-posn 0 0))  ;Muestra una foto del tamaño de la ventana (pantalla inicio)
+
+#|Dibujo piano|#
+
+(define dibujar_piano(
+  ((draw-viewport main)"gray")
+  ((draw-pixmap main)"Base_piano.jpg" (make-posn 0 250))
+  ((draw-pixmap main)"Imagen_nada.jpeg" (make-posn 74 373))))   ;Definimos una función que dibuja la estructura del piano
+
+#|Animación de carga|#
+(define (animacion_carga xblanca xnegra) ;funcion con argumento de ubicación x para teclas blancas y negras.
+  (cond ((< xblanca 830)                 ;Condición de para de la función.
+         ((draw-solid-rectangle inicio)(make-posn (+ xblanca 1) 510)15 50 "white") ;Primer tecla blanca. Suma 1 para poder mostrar la linea de separación entre teclas.
+         (sleep 0.1)                                                       ;Temporizador para dar efecto de barra de carga
+         ((draw-solid-rectangle inicio)(make-posn xnegra 510)10 30 "black")  ;Primer tecla negra
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xblanca 15) 510)15 50 "white"); En cada parámetro de la función se va sumando de a 15 sin afectar el valor incial
+         ((draw-solid-rectangle inicio)(make-posn xnegra 510)10 30 "black")
+         ((draw-line inicio)(make-posn (+ xblanca 15) 510)(make-posn (+ xblanca 15) 560));Esta linea da contorno a las teclas
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xnegra 15) 510)10 30 "black");Vuelve a dibujar la tecla negra que se borra al dibujar la tecla blanca
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xblanca 30) 510)15 50 "white")
+         ((draw-solid-rectangle inicio)(make-posn (+ xnegra 15) 510)10 30 "black")
+         ((draw-line inicio)(make-posn (+ xblanca 30) 510)(make-posn (+ xblanca 30) 560))
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xblanca 45) 510)15 50 "white")
+         ((draw-line inicio)(make-posn (+ xblanca 45) 510)(make-posn (+ xblanca 45) 560)"black")
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xnegra 45) 510)10 30 "black")
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xblanca 60) 510)15 50 "white")
+         ((draw-solid-rectangle inicio)(make-posn (+ xnegra 45) 510)10 30 "black")
+         ((draw-line inicio)(make-posn (+ xblanca 60) 510)(make-posn (+ xblanca 60) 560))
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xnegra 60) 510)10 30 "black")
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xblanca 75) 510)15 50 "white")
+         ((draw-solid-rectangle inicio)(make-posn (+ xnegra 60) 510)10 30 "black")
+         ((draw-line inicio)(make-posn (+ xblanca 75) 510)(make-posn (+ xblanca 75) 560)"black")
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xnegra 75) 510)10 30 "black")
+         (sleep 0.1)
+         ((draw-solid-rectangle inicio)(make-posn (+ xblanca 90) 510)15 50 "white")
+         ((draw-solid-rectangle inicio)(make-posn (+ xnegra 75) 510)10 30 "black")
+         ((draw-line inicio)(make-posn (+ xblanca 90) 510)(make-posn (+ xblanca 90) 560))
+         (sleep 0.1)
+         ((draw-line inicio)(make-posn (+ xblanca 105)510)(make-posn (+ xblanca 105)560)"black")
+         (animacion_carga (+ xblanca 105) (+ xnegra 105));Llamado recursivo, añadiendo el acumulado de cada 15 que se sumó a las coordenadas
+         (sleep 1)            ;Temporizador para cerrar la ventana luego de que carga.
+         (close-viewport inicio);Cierra la ventana 
+         (dibujar_piano);(llama ventana donde está el piano virtual);----Abre la nueva ventana (piano virtual) despues de la carga----
+         );Cierra la condición
+        );Termina el condicional y a su vez el proceso
+  );Cierre de la función definida
+
+;En esta función se tiene en cuenta que la octava de piano tiene un patrón, tal patrón es el que se da en toda la función
+;el llamado recursivo, empieza a dibujar otra octava exactamente igual a la primera pero desde la posición en que quedó el borde
+;de la última tecla
+
+(animacion_carga 300 310);Llamado a la función de animación de carga en la pantalla de inicio
